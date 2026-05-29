@@ -38,6 +38,18 @@ function mapRecipe(r: {
   }
 }
 
+const MEAL_TYPE: Record<'breakfast' | 'lunch' | 'dinner', string> = {
+  breakfast: 'breakfast',
+  lunch: 'soup,salad,sandwich,main course',
+  dinner: 'main course',
+}
+
+const MEAL_OFFSET: Record<'breakfast' | 'lunch' | 'dinner', number> = {
+  breakfast: 0,
+  lunch: 0,
+  dinner: 7,
+}
+
 export async function searchMeals(
   prefs: Preferences,
   mealType: 'breakfast' | 'lunch' | 'dinner',
@@ -49,8 +61,9 @@ export async function searchMeals(
   const maxCals = Math.round(prefs.calories * MEAL_CALORIE_SPLIT[mealType])
   const params = new URLSearchParams({
     apiKey,
-    type: mealType === 'breakfast' ? 'breakfast' : 'main course',
+    type: MEAL_TYPE[mealType],
     number: String(count),
+    offset: String(MEAL_OFFSET[mealType]),
     addRecipeInformation: 'true',
     addRecipeNutrition: 'true',
     instructionsRequired: 'true',
@@ -82,5 +95,20 @@ export async function getRecipeDetails(id: number) {
   const params = new URLSearchParams({ apiKey, includeNutrition: 'true' })
   const res = await fetch(`${BASE}/recipes/${id}/information?${params}`)
   if (!res.ok) throw new Error(`Spoonacular ${res.status}`)
+  return res.json()
+}
+
+export async function getBulkRecipeDetails(ids: number[]) {
+  if (ids.length === 0) return []
+  const apiKey = process.env.SPOONACULAR_API_KEY
+  if (!apiKey) throw new Error('SPOONACULAR_API_KEY not set')
+
+  const params = new URLSearchParams({
+    apiKey,
+    ids: ids.join(','),
+    includeNutrition: 'true',
+  })
+  const res = await fetch(`${BASE}/recipes/informationBulk?${params}`)
+  if (!res.ok) throw new Error(`Spoonacular bulk ${res.status}`)
   return res.json()
 }

@@ -153,6 +153,12 @@ export default function PlanPage() {
             >
               Edit Prefs
             </button>
+            <Link
+              href="/shopping"
+              className="rounded-lg border border-emerald-300 px-3 py-1.5 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors"
+            >
+              🛒 Shopping List
+            </Link>
             <button
               onClick={regeneratePlan}
               disabled={regenerating}
