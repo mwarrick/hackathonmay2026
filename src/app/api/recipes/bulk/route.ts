@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getBulkRecipeDetails } from '@/lib/spoonacular'
 import { getCachedRecipe, setCachedRecipes } from '@/lib/db'
 import type { NextRequest } from 'next/server'

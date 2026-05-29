@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { searchMeals } from '@/lib/spoonacular'
 import type { Preferences } from '@/types'
 

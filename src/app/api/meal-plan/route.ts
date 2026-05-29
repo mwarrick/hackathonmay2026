@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { searchMeals, getBulkRecipeDetails } from '@/lib/spoonacular'
 import { getCachedPlan, setCachedPlan, setCachedRecipes, hashPrefs } from '@/lib/db'
 import type { Preferences, WeekPlan } from '@/types'
