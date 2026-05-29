@@ -53,17 +53,19 @@ const MEAL_OFFSET: Record<'breakfast' | 'lunch' | 'dinner', number> = {
 export async function searchMeals(
   prefs: Preferences,
   mealType: 'breakfast' | 'lunch' | 'dinner',
-  count: number
+  count: number,
+  offsetOverride?: number
 ): Promise<Meal[]> {
   const apiKey = process.env.SPOONACULAR_API_KEY
   if (!apiKey) throw new Error('SPOONACULAR_API_KEY not set')
 
   const maxCals = Math.round(prefs.calories * MEAL_CALORIE_SPLIT[mealType])
+  const offset = offsetOverride ?? MEAL_OFFSET[mealType]
   const params = new URLSearchParams({
     apiKey,
     type: MEAL_TYPE[mealType],
     number: String(count),
-    offset: String(MEAL_OFFSET[mealType]),
+    offset: String(offset),
     addRecipeInformation: 'true',
     addRecipeNutrition: 'true',
     instructionsRequired: 'true',

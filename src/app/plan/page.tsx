@@ -41,7 +41,7 @@ function MealCard({
       )}
       <div className="p-2.5">
         <Link
-          href={`/recipe/${meal.id}?household=${householdSize}`}
+          href={`/recipe/${meal.id}/cook?household=${householdSize}`}
           className="text-xs font-semibold text-stone-800 hover:text-emerald-600 line-clamp-2 leading-tight block"
         >
           {meal.title}
@@ -101,21 +101,20 @@ export default function PlanPage() {
     if (!prefs || !plan) return
     const key = `${dayIndex}-${mealType}`
     setSwapping(key)
+    const currentId = plan[dayIndex]?.[mealType]?.id ?? 0
     try {
-      const res = await fetch('/api/meal-plan', {
+      const res = await fetch('/api/swap-meal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prefs),
+        body: JSON.stringify({ prefs, mealType, excludeId: currentId }),
       })
-      const freshPlan: WeekPlan = await res.json()
-      const newMeal = freshPlan[dayIndex]?.[mealType]
-      if (newMeal) {
-        const updated = plan.map((day, i) =>
-          i === dayIndex ? { ...day, [mealType]: newMeal } : day
-        )
-        setPlan(updated)
-        localStorage.setItem('mealplanner_plan', JSON.stringify(updated))
-      }
+      if (!res.ok) return
+      const newMeal = await res.json()
+      const updated = plan.map((day, i) =>
+        i === dayIndex ? { ...day, [mealType]: newMeal } : day
+      )
+      setPlan(updated)
+      localStorage.setItem('mealplanner_plan', JSON.stringify(updated))
     } finally {
       setSwapping(null)
     }
