@@ -147,6 +147,15 @@ export default function PlanPage() {
           </div>
           <div className="flex gap-2">
             <button
+              onClick={async () => {
+                await fetch('/api/auth/logout', { method: 'POST' })
+                router.push('/login')
+              }}
+              className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-50 transition-colors"
+            >
+              Log out
+            </button>
+            <button
               onClick={() => router.push('/')}
               className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-600 hover:bg-stone-50 transition-colors"
             >
